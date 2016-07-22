@@ -5,10 +5,27 @@
         <title>Canvas</title>
         <script src="./main.js"></script>
         <style type="text/css">
-         canvas { border: 1px solid black; }
+         html, body {
+    	     height: 100%;
+    	     margin: 0;
+    	 }
+
+         #page-wrap {
+             min-height: 100%;
+             margin: 0 auto;
+             position: relative;
+         }
+
+         canvas {
+             position: absolute
+             margin: 0 auto;
+         }
+
         </style>
     </head>
     <body onload="main();">
-        <canvas id="canvas" width="500" height="500"></canvas>
+        <div id="page-wrap">
+            <canvas id="canvas" width="500" height="500"></canvas>
+        </div>
     </body>
 </html>

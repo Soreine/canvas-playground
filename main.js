@@ -7,32 +7,57 @@ var HEIGHT = 500;
 var WIDTH = false || HEIGHT;
 var CENTER = HEIGHT/2;
 
-var BG_COLOR = '#ddd';
-var DRAW_COLOR = '#555';
+var BG_COLOR = '#fff';
+var DRAW_COLOR = '#999';
 
 var N = 100;
 var SIZE = 300;
 var STEP_ANGLE = 2*Math.PI/N;
 var STEP_SIZE = SIZE/N;
+
+var PERIOD = 4000;
+var ANIMATION = 1000;
+
+var t = 0;
+
 function loop () {
+    var time = t*1000/60;
     clear();
 
     ctx.beginPath();
 
+
     for (var i = 0; i < N; ++i) {
-        var size = SIZE - i*STEP_SIZE - 1;
-        square(CENTER, CENTER,
-               i*STEP_ANGLE, size*Math.sin(x + i*0.01), size);
+        drawSquare(i, time);
     }
 
     ctx.stroke();
     ctx.closePath();
 
-    x += 0.01;
-    if (x > WIDTH) x = -50;
+    t++;
     window.requestAnimationFrame(loop);
 }
 
+function drawSquare(i, time) {
+    var angle = i*STEP_ANGLE;
+    var startTime = i*(PERIOD - ANIMATION)/N;
+
+    var progress;
+    if (time < startTime) {
+        progress = 0;
+    } else if (time > startTime + ANIMATION) {
+        progress = 1;
+    } else {
+        progress = (time - startTime)/ANIMATION;
+    }
+
+    var width = SIZE - i*STEP_SIZE - 1;
+    width = width*Math.sin(progress);
+
+    var height = width;
+
+    square(CENTER, CENTER, angle, width, height);
+}
 function square(cx, cy, rotation, width, height) {
     ctx.translate(cx, cy);
     ctx.rotate(rotation);
