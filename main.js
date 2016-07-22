@@ -35,6 +35,7 @@ function loop () {
     ctx.closePath();
 
     t++;
+    if (time > PERIOD) t = 0;
     window.requestAnimationFrame(loop);
 }
 
@@ -51,10 +52,9 @@ function drawSquare(i, time) {
         progress = (time - startTime)/ANIMATION;
     }
 
-    var width = SIZE - i*STEP_SIZE - 1;
-    width = width*Math.sin(progress);
-
-    var height = width;
+    var size = SIZE - i*STEP_SIZE - 1;
+    var height = size;
+    var width = size*Math.sin(Math.PI*(0.5 - progress));
 
     square(CENTER, CENTER, angle, width, height);
 }
