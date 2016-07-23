@@ -1,4 +1,7 @@
 
+// Tween https://github.com/ashblue/simple-tween-js/blob/master/tween.js
+// Perlin texturing http://asserttrue.blogspot.fr/2012/01/procedural-textures-in-html5-canvas.html#
+
 var x = 1;
 
 var canvas, ctx;
@@ -10,13 +13,13 @@ var CENTER = HEIGHT/2;
 var BG_COLOR = '#fff';
 var DRAW_COLOR = '#999';
 
-var N = 100;
+var N = 200;
 var SIZE = 300;
 var STEP_ANGLE = 2*Math.PI/N;
 var STEP_SIZE = SIZE/N;
 
-var PERIOD = 4000;
-var ANIMATION = 1000;
+var PERIOD = 3000;
+var ANIMATION = 1500;
 
 var t = 0;
 
@@ -41,23 +44,26 @@ function loop () {
 
 function drawSquare(i, time) {
     var angle = i*STEP_ANGLE;
-    var startTime = i*(PERIOD - ANIMATION)/N;
+    var startTime = i*PERIOD/N;
+    var absoluteTime = time - startTime;
+    absoluteTime = modulo(absoluteTime, PERIOD);
 
-    var progress;
-    if (time < startTime) {
-        progress = 0;
-    } else if (time > startTime + ANIMATION) {
-        progress = 1;
-    } else {
-        progress = (time - startTime)/ANIMATION;
-    }
+    var progress = absoluteTime/ANIMATION;
+    progress = progress*progress;
+    if (progress > 1) progress = 1;
+    if (progress < 0) progress = 0;
 
     var size = SIZE - i*STEP_SIZE - 1;
     var height = size;
-    var width = size*Math.sin(Math.PI*(0.5 - progress));
+    var width = size*Math.sin(Math.PI*(0.5 + progress));
 
     square(CENTER, CENTER, angle, width, height);
 }
+
+function modulo(x, y) {
+    return x - Math.floor(x/y)*y;
+}
+
 function square(cx, cy, rotation, width, height) {
     ctx.translate(cx, cy);
     ctx.rotate(rotation);
