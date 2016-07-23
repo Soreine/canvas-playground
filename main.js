@@ -13,7 +13,7 @@ var BG_COLOR = '#fff';
 var DRAW_COLOR = gray(170, 0.9);
 
 var N = 100;
-var SIZE = 300;
+var SIZE = 240;
 var STEP_ANGLE = 0.8*2*Math.PI/N;
 var STEP_SIZE = SIZE/N;
 
@@ -54,9 +54,9 @@ function drawSquare(i, time) {
 
     var size = SIZE - i*STEP_SIZE - 1;
     var height = size;
-    var width = size*Math.sin(Math.PI*(0.5 + progress));
+    var width = -size*Math.abs(Math.sin(Math.PI*(0.5 + progress)));
 
-    square(CENTER, CENTER, angle, width, height);
+    triangle(CENTER, CENTER, angle, width, height);
 }
 
 function modulo(x, y) {
@@ -67,6 +67,20 @@ function square(cx, cy, rotation, width, height) {
     ctx.translate(cx, cy);
     ctx.rotate(rotation);
     ctx.rect(-width/2, -height/2, width, height);
+    resetTransform();
+}
+
+function triangle(cx, cy, rotation, width) {
+    ctx.translate(cx, cy);
+    var height = width;
+    ctx.rotate(rotation);
+    ctx.moveTo(0, height);
+    ctx.rotate(Math.PI*2/3);
+    ctx.lineTo(0, height);
+    ctx.rotate(Math.PI*2/3);
+    ctx.lineTo(0, height);
+    ctx.rotate(Math.PI*2/3);
+    ctx.lineTo(0, height);
     resetTransform();
 }
 
