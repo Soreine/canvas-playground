@@ -10,21 +10,21 @@ var WIDTH;
 var CENTER;
 
 var BG_COLOR = '#fff';
-var DRAW_COLOR = '#666';
+var DRAW_COLOR = gray(170, 0.9);
 
 var N = 100;
 var SIZE = 300;
-var STEP_ANGLE = 2*Math.PI/N;
+var STEP_ANGLE = 0.8*2*Math.PI/N;
 var STEP_SIZE = SIZE/N;
 
-var PERIOD = 3000;
-var ANIMATION = 1500;
+var PERIOD = 2700;
+var ANIMATION = 1200;
 
 var t = 0;
 
 function loop () {
     var time = t*1000/60;
-    drawBg();
+    clear();
 
     ctx.beginPath();
 
@@ -80,15 +80,18 @@ function createBg() {
     var data = BG_IMAGE.data;
     for (var x = 0; x < canvas.width; x++) {
         for (var y = 0; y < canvas.height; y++) {
-            // All noise functions return values in the range of -1 to 1.
+            var xr = x - WIDTH/2;
+            var yr = y - WIDTH/2;
+            var radius = Math.sqrt(xr*xr + yr*yr);
 
-            // noise.simplex2 and noise.perlin2 for 2d noise
+            // All noise functions return values in the range of -1 to 1.
             var value = (noise.simplex2(x, y) + 1)/2; // [0; 1]
             var color = 256*(value*0.2 + 0.8);
 
             var cell = (x + y * canvas.width) * 4;
             data[cell] = data[cell + 1] = data[cell + 2] = color;
-            data[cell + 3] = 255;
+            // transparency
+            data[cell + 3] = (1 - smoothSin(WIDTH/2 - 120, WIDTH/2, radius))*color;
         }
     }
 }
@@ -101,6 +104,18 @@ function clear() {
     ctx.fillStyle = BG_COLOR;
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
     ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+}
+
+function smoothSin(min, max, x) {
+    if (x < min) return 0;
+    if (x > max) return 1;
+    var r = (x - min)/(max - min);
+    return Math.sin(-Math.PI*0.5 + Math.PI*r);
+}
+
+function gray(v, alpha) {
+    alpha = alpha || 0;
+    return 'rgba('+v+','+v+','+v+','+alpha+')';
 }
 
 function main(){
