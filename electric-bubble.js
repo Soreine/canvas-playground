@@ -15,11 +15,11 @@ var endPos = [];
 var NUM = 200;
 
 var frame = 0;
-var NB_FRAME = 60;
+var NB_FRAME = 75;
 
 function getLineWidth(frame) {
     var progress = (frame % NB_FRAME)/NB_FRAME;
-    return 10 - Math.sqrt(progress)*10;
+    return (1 - Math.sqrt(progress))*20;
 }
 
 function setup () {
@@ -50,7 +50,7 @@ function draw (frame) {
         dots[i].y = lerp(dots[i].y, endPos[i].y, 0.1);
     }
     path(ctx, function () {
-        ctx.strokeStyle = gray(255 - constrain(frame % NB_FRAME, 0, 30) * 2);
+        ctx.strokeStyle = gray(255 - Math.floor(constrain(frame % NB_FRAME, 0, 30)*1.5));
         shape(ctx, dots);
         ctx.stroke();
     });
