@@ -19,6 +19,7 @@ var frame = 0;
 var ANIMATION_FRAME = 90;
 var NB_FRAME = 2 * ANIMATION_FRAME;
 var getMaxLineWidth = function () { return Math.floor(WIDTH/25); };
+var mouse;
 
 function setup () {
     ctx.lineJoin = 'round';
@@ -44,7 +45,7 @@ function draw (frame) {
 
     // Init next positions ?
     if (frame % NB_FRAME === ANIMATION_FRAME) {
-        origPos = randomShape();
+        origPos = randomShape(mouse);
     }
     ctx.lineWidth = getLineWidth(frame);
 
@@ -75,12 +76,14 @@ function draw (frame) {
         ctx.stroke();
     });
 
-    // Draw the white circle
+    // Restrict drawing to a white circle
     path(ctx, function () {
+        ctx.globalCompositeOperation = 'destination-atop';
         ctx.strokeStyle = gray(255);
-        ctx.lineWidth = getLineWidth(frame) + 1;
+        ctx.lineWidth = 1;
         circle(ctx, WCENTER, HCENTER, radius);
-        ctx.stroke();
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
     });
 }
 
@@ -108,7 +111,8 @@ function getLineWidth(frame) {
     return (1 - Math.sqrt(progress))*getMaxLineWidth();
 }
 
-function randomShape() {
+function randomShape(center) {
+    center = center || { x: WCENTER, y: HCENTER };
     // Init start position
     var dots = [];
     var maxR = radius * 0.66;
@@ -118,8 +122,8 @@ function randomShape() {
         var r = maxR * Math.sqrt(Math.random());
         var angle = TWO_PI * Math.random();
         var dot = {
-            x: WCENTER + r * Math.cos(angle),
-            y: HCENTER + r * Math.sin(angle)
+            x: center.x + r * Math.cos(angle),
+            y: center.y + r * Math.sin(angle)
         };
         dots.push(dot);
     }
@@ -162,6 +166,8 @@ function main(ref){
         WIDTH = canvas.width;
         WCENTER = WIDTH/2;
         HCENTER = HEIGHT/2;
+
+        mouse = recordMouse(canvas);
 
         setup();
 
@@ -221,4 +227,33 @@ function path(ctx, fun) {
     ctx.beginPath();
     fun();
     ctx.closePath();
+}
+
+
+// Watch mouse position
+// Return an updated object
+function recordMouse(canvas) {
+    var mouse = {
+        x: 0,
+        y: 0
+    };
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
+    }
+
+    canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        mouse.x = mousePos.x;
+        mouse.y = mousePos.y;
+
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        console.log(message);
+    }, false);
+
+    return mouse;
 }
