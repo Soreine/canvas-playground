@@ -16,8 +16,9 @@ var endPos = [];
 var NUM = 200;
 
 var frame = 0;
-var ANIMATION_FRAME = 75;
+var ANIMATION_FRAME = 90;
 var NB_FRAME = 2 * ANIMATION_FRAME;
+var getMaxLineWidth = function () { return Math.floor(WIDTH/25); };
 
 function setup () {
     ctx.lineJoin = 'round';
@@ -40,8 +41,6 @@ function loop () {
 function draw (frame) {
     // Are we expanding, or resorbing ?
     var expanding = isExpanding(frame);
-    // Animation progress
-    var progress = getAnimationProgress(frame);
 
     // Init next positions ?
     if (frame % NB_FRAME === ANIMATION_FRAME) {
@@ -60,8 +59,8 @@ function draw (frame) {
     }
 
     for (var i = 0; i < NUM; ++i) {
-        dots[i].x = lerp(start[i].x, destination[i].x, progress);
-        dots[i].y = lerp(start[i].y, destination[i].y, progress);
+        dots[i].x = interpolate(start[i].x, destination[i].x, frame);
+        dots[i].y = interpolate(start[i].y, destination[i].y, frame);
     }
 
     var color;
@@ -76,9 +75,10 @@ function draw (frame) {
         ctx.stroke();
     });
 
-    // Draw the circle
+    // Draw the white circle
     path(ctx, function () {
         ctx.strokeStyle = gray(255);
+        ctx.lineWidth = getLineWidth(frame) + 1;
         circle(ctx, WCENTER, HCENTER, radius);
         ctx.stroke();
     });
@@ -91,15 +91,21 @@ function getAnimationProgress(frame) {
     return (frame % ANIMATION_FRAME)/ANIMATION_FRAME;
 }
 
+// Get a coordinate for a dot, at a given frame
+function interpolate(min, max, frame) {
+    var progress = getAnimationProgress(frame);
+    var tween = isExpanding(frame) ? quadIn : quadOut;
+    return lerp(min, max, tween(progress));
+}
+
 function getLineWidth(frame) {
-    var MAX_LINEDWIDTH = Math.floor(WIDTH/25);
     var progress = getAnimationProgress(frame);
 
-    if (isExpanding(frame)) {
+    if (!isExpanding(frame)) {
         progress = 1 - progress;
     }
 
-    return (1 - Math.sqrt(progress))*MAX_LINEDWIDTH;
+    return (1 - Math.sqrt(progress))*getMaxLineWidth();
 }
 
 function randomShape() {
@@ -200,6 +206,15 @@ function circle(ctx, x, y, radius) {
 
 function lerp(min, max, amount) {
     return ((max - min) * amount) + min;
+}
+
+function quadOut(percent) {
+    return percent * percent * percent * percent * percent * percent;
+}
+
+function quadIn(percent) {
+    percent = 1 - percent;
+    return 1 - quadOut(percent);
 }
 
 function path(ctx, fun) {
