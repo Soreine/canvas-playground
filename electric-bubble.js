@@ -10,23 +10,22 @@ var HCENTER;
 var angle = 0;
 var radius;
 // Arrays
-var dots;
+var dots = [];
+var origPos = [];
 var endPos = [];
 var NUM = 200;
 
 var frame = 0;
-var NB_FRAME = 75;
-
-function getLineWidth(frame) {
-    var progress = (frame % NB_FRAME)/NB_FRAME;
-    return (1 - Math.sqrt(progress))*20;
-}
+var ANIMATION_FRAME = 75;
+var NB_FRAME = 2 * ANIMATION_FRAME;
 
 function setup () {
     ctx.lineJoin = 'round';
 
     radius = Math.min(WIDTH * 0.4, HEIGHT * 0.4);
 
+    origPos = randomShape();
+    initDots();
     initEnd();
 }
 
@@ -39,18 +38,40 @@ function loop () {
 }
 
 function draw (frame) {
-    if (frame % NB_FRAME === 0) {
-        initShape();
+    // Are we expanding, or resorbing ?
+    var expanding = isExpanding(frame);
+    // Animation progress
+    var progress = getAnimationProgress(frame);
+
+    // Init next positions ?
+    if (frame % NB_FRAME === ANIMATION_FRAME) {
+        origPos = randomShape();
     }
     ctx.lineWidth = getLineWidth(frame);
 
     // Draw the Shape
+    var destination, start;
+    if (expanding) {
+        destination = endPos;
+        start = origPos;
+    } else {
+        destination = origPos;
+        start = endPos;
+    }
+
     for (var i = 0; i < NUM; ++i) {
-        dots[i].x = lerp(dots[i].x, endPos[i].x, 0.1);
-        dots[i].y = lerp(dots[i].y, endPos[i].y, 0.1);
+        dots[i].x = lerp(start[i].x, destination[i].x, progress);
+        dots[i].y = lerp(start[i].y, destination[i].y, progress);
+    }
+
+    var color;
+    if (expanding) {
+        color = gray(255 - Math.floor(constrain(frame % ANIMATION_FRAME, 0, ANIMATION_FRAME/2)*1.5));
+    } else {
+        color = gray(255 - Math.floor(constrain(ANIMATION_FRAME - (frame % ANIMATION_FRAME), 0, ANIMATION_FRAME/2)*1.5));
     }
     path(ctx, function () {
-        ctx.strokeStyle = gray(255 - Math.floor(constrain(frame % NB_FRAME, 0, 30)*1.5));
+        ctx.strokeStyle = color;
         shape(ctx, dots);
         ctx.stroke();
     });
@@ -63,20 +84,40 @@ function draw (frame) {
     });
 }
 
-function initShape() {
+function isExpanding(frame) {
+    return frame % NB_FRAME <= ANIMATION_FRAME;
+}
+function getAnimationProgress(frame) {
+    return (frame % ANIMATION_FRAME)/ANIMATION_FRAME;
+}
+
+function getLineWidth(frame) {
+    var MAX_LINEDWIDTH = Math.floor(WIDTH/25);
+    var progress = getAnimationProgress(frame);
+
+    if (isExpanding(frame)) {
+        progress = 1 - progress;
+    }
+
+    return (1 - Math.sqrt(progress))*MAX_LINEDWIDTH;
+}
+
+function randomShape() {
     // Init start position
-    dots = [];
+    var dots = [];
     var maxR = radius * 0.66;
     for (var i = 0; i < NUM; ++i) {
         // Random inside a circle
         // http://www.anderswallin.net/2009/05/uniform-random-points-in-a-circle-using-polar-coordinates/
         var r = maxR * Math.sqrt(Math.random());
         var angle = TWO_PI * Math.random();
-        dots.push({
+        var dot = {
             x: WCENTER + r * Math.cos(angle),
             y: HCENTER + r * Math.sin(angle)
-        });
+        };
+        dots.push(dot);
     }
+    return dots;
 }
 
 function initEnd() {
@@ -87,6 +128,17 @@ function initEnd() {
             y: HCENTER + Math.cos(angle)*radius
         });
         angle += TWO_PI/NUM;
+    }
+}
+
+function initDots() {
+    dots = [];
+    // Init end position
+    for (var i = 0; i < NUM; ++i) {
+        dots.push({
+            x: 0,
+            y: 0
+        });
     }
 }
 
