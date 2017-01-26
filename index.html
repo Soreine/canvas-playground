@@ -8,24 +8,21 @@
          html, body {
     	     height: 100%;
     	     margin: 0;
+             background-color: #777
     	 }
 
-         #page-wrap {
-             min-height: 100%;
-             margin: 0 auto;
-             position: relative;
-         }
-
          canvas {
-             position: absolute
-             margin: 0 auto;
+             position: fixed;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             transform: -webkit-translate(-50%, -50%);
+             transform: -ms-translate(-50%, -50%);
          }
 
         </style>
     </head>
     <body onload="main('canvas');">
-        <div id="page-wrap">
-            <canvas id="canvas" width="500" height="500"></canvas>
-        </div>
+        <canvas id="canvas" width="500" height="500"></canvas>
     </body>
 </html>
