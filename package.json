@@ -4,7 +4,7 @@
   "description": "",
   "main": " ",
   "scripts": {
-      "serve": "./node_modules/http-server/bin/http-server ."
+      "serve": "./node_modules/http-server/bin/http-server . -c-1"
   },
   "repository": {
     "type": "git",
