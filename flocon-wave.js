@@ -27,10 +27,9 @@ function draw(ctx, frame) {
 
     var progs = createArray(6, function (i) { return nProgress(prog, i, N_HEXAGON); })
 
-
     progs.forEach(function (prog, i) {
         ctx.strokeStyle = grayPercent(prog);
-        hexagon(ctx, RADIUS * prog, i*Math.PI/2);
+        hexagon(ctx, RADIUS * prog, i*Math.PI/2, prog);
     });
 
 }
@@ -169,12 +168,13 @@ function grayPercent(percent, alpha) {
  * @return {Array<Coord>} The 4 coordinates of the two segments to draw
  */
 function holeSegment(pos1, pos2, percent) {
-    return [
+    var res = [
         pos1,
         lerp(pos1, pos2, 0.5 - percent/2),
         lerp(pos1, pos2, 0.5 + percent/2),
         pos2
-    ]
+    ];
+    return res;
 }
 
 function lerp(pos1, pos2, percent) {
