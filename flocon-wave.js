@@ -25,11 +25,11 @@ function draw(ctx, frame) {
     var RADIUS = WIDTH/4;
     var prog = progress(frame);
 
-    var progs = createArray(6, function (i) { return nProgress(prog, i, N_HEXAGON); })
+    var progs = createArray(N_HEXAGON, function (i) { return nProgress(prog, i, N_HEXAGON); })
 
     progs.forEach(function (prog, i) {
         ctx.strokeStyle = grayPercent(prog);
-        hexagon(ctx, RADIUS * prog, i*Math.PI/2, prog);
+        hexagon(ctx, RADIUS * prog, i*2*Math.PI/N_HEXAGON, prog);
     });
 
 }
@@ -43,7 +43,7 @@ function nProgress(prog, i, n) {
 }
 
 function hexagon(ctx, radius, rotation, holePercent) {
-    var shape = polygon(6, radius, new Coord(CENTER, CENTER), rotation);
+    var shape = polygon(4, radius, new Coord(CENTER, CENTER), rotation);
     var segments = getSegments(shape);
     var withHole = segments.map(
         function (segment) {
@@ -179,8 +179,8 @@ function holeSegment(pos1, pos2, percent) {
 
 function lerp(pos1, pos2, percent) {
     return new Coord(
-        (1 - percent * pos1.x) + pos2.x,
-        (1 - percent * pos1.y) + pos2.y
+        (1 - percent) * pos1.x + percent * pos2.x,
+        (1 - percent) * pos1.y + percent * pos2.y
     );
 }
 
