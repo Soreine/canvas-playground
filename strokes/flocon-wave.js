@@ -221,3 +221,7 @@ function getSegments(vertices) {
 
     return res;
 }
+
+module.exports = {
+    main
+}
