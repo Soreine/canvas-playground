@@ -1,4 +1,4 @@
-var BG_COLOR = '#fafafa';
+var BG_COLOR = 'white';
 var DRAW_COLOR = gray(170, 0.9);
 
 var PERIOD = 8000; // ms
@@ -13,6 +13,7 @@ var canvas, ctx;
 // Custom functions
 // --------------------------------------------------
 var N_HEXAGON = 6;
+var SIDES = 6;
 
 function setup(ctx) {
     ctx.strokeStyle = 'black';
@@ -22,14 +23,17 @@ function setup(ctx) {
 }
 
 function draw(ctx, frame) {
-    var RADIUS = WIDTH/4;
+    var RADIUS = 0.35 * WIDTH;
     var prog = progress(frame);
 
     var progs = createArray(N_HEXAGON, function (i) { return nProgress(prog, i, N_HEXAGON); })
 
+    const halfAngle= Math.PI / SIDES;
+
     progs.forEach(function (prog, i) {
         ctx.strokeStyle = grayPercent(prog);
-        hexagon(ctx, RADIUS * prog, i*2*Math.PI/N_HEXAGON, prog);
+        const rotation = (i % 2) * halfAngle;
+        hexagon(ctx, RADIUS * prog, rotation, Math.pow(prog, 2));
     });
 
 }
@@ -43,7 +47,7 @@ function nProgress(prog, i, n) {
 }
 
 function hexagon(ctx, radius, rotation, holePercent) {
-    var shape = polygon(4, radius, new Coord(CENTER, CENTER), rotation);
+    var shape = polygon(SIDES, radius, new Coord(CENTER, CENTER), rotation);
     var segments = getSegments(shape);
     var withHole = segments.map(
         function (segment) {
@@ -60,9 +64,12 @@ function hexagon(ctx, radius, rotation, holePercent) {
         }, []
     );
 
-    withHole.forEach(function (segment) {
+    withHole.forEach(function (segment, i) {
         drawShape(ctx, segment, true);
-        ctx.stroke();
+//        const mod = (i + 1) % 2;
+//        if (mod != 1) {
+            ctx.stroke();
+//        }
     });
 }
 
