@@ -28,11 +28,11 @@ function draw(ctx, frame) {
 
     var progs = createArray(N_HEXAGON, function (i) { return nProgress(prog, i, N_HEXAGON); })
 
-    const halfAngle= Math.PI / SIDES;
+    var halfAngle= Math.PI / SIDES;
 
     progs.forEach(function (prog, i) {
-        ctx.strokeStyle = grayPercent(prog);
-        const rotation = (i % 2) * halfAngle;
+        ctx.strokeStyle = grayPercent(0.4 + 0.6*prog);
+        var rotation = (i % 2) * halfAngle;
         hexagon(ctx, RADIUS * prog, rotation, Math.pow(prog, 2));
     });
 
@@ -223,5 +223,5 @@ function getSegments(vertices) {
 }
 
 module.exports = {
-    main
-}
+    main: main
+};
