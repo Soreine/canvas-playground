@@ -2,8 +2,8 @@
   "name": "canvas-playground",
   "version": "0.0.1",
   "scripts": {
-    "serve": "http-server ./gallery/ -c-1",
-    "watch": "watchify ./gallery/index.js -o ./gallery/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "serve": "http-server ./ -c-1",
+    "watch": "watchify ./index.js -o ./bundle.js -t [ babelify --presets [ es2015 ] ]",
     "start": "parallelshell 'npm run watch' 'npm run serve'"
   },
   "repository": {
