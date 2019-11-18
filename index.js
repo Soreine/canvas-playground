@@ -1,3 +1,3 @@
-var Intersperse = require('./strokes/intersperse');
+var warp = require("./src/warp");
 
-window.onload = Intersperse.main;
+window.onload = warp.main;
