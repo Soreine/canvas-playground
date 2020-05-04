@@ -2,26 +2,31 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Canvas</title>
-    <script src="./bundle.js"></script>
+    <title>Playground</title>
     <style type="text/css">
       html,
       body {
         height: 100%;
         margin: 0;
       }
-
-      canvas {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        transform: -webkit-translate(-50%, -50%);
-        transform: -ms-translate(-50%, -50%);
-      }
     </style>
   </head>
   <body>
-    <canvas id="canvas" width="853" height="480"></canvas>
+    <div id="experiment-list"></div>
+
+    <script>
+      const experiments = ['template', 'absorbing-triangle'];
+
+      document.getElementById('experiment-list').innerHTML = `
+      <ul>
+        ${experiments
+          .map(
+            (experiment) =>
+              `<li><a href="./experiments/${experiment}/index.html">${experiment}</a></li>`
+          )
+          .join('\n')}
+      </ul>
+      `;
+    </script>
   </body>
 </html>

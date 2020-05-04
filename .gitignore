@@ -1,2 +1,4 @@
 bundle.js
-./lib
+lib/
+dist/
+.cache/

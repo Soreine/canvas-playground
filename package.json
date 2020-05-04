@@ -2,11 +2,10 @@
   "name": "canvas-playground",
   "version": "0.0.1",
   "scripts": {
-    "type-check": "tsc --noEmit",
-    "type-check:watch": "npm run type-check -- --watch",
-    "build": "npm run build:types && npm run build:js",
-    "build:types": "tsc --emitDeclarationOnly",
-    "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline"
+    "lint": "eslint . && tsc --noEmit",
+    "lint:fix": "eslint . --fix",
+    "dev": "echo 'PLEASE OPEN http://localhost:1234/index.html' && parcel index.html experiments/**/*.html",
+    "build": "parcel build index.html experiments/**/*.html"
   },
   "repository": {
     "type": "git",
@@ -19,13 +18,14 @@
   },
   "homepage": "https://github.com/Soreine/canvas-playground#readme",
   "devDependencies": {
-    "@babel/cli": "^7.7.0",
-    "@babel/core": "^7.7.2",
-    "@babel/plugin-proposal-class-properties": "^7.7.0",
-    "@babel/plugin-proposal-numeric-separator": "^7.2.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
-    "@babel/preset-env": "^7.7.1",
-    "@babel/preset-typescript": "^7.7.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript-prettier": "^2.1.1",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^1.12.4",
+    "prettier": "^2.0.5",
     "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "perlin": "^1.0.0"
   }
 }
