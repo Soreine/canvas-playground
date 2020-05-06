@@ -26,6 +26,9 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "perlin": "^1.0.0"
+    "@types/complex.js": "^2.0.1",
+    "complex.js": "^2.0.11",
+    "perlin": "^1.0.0",
+    "rambda": "^5.1.1"
   }
 }
